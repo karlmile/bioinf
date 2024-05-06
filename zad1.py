@@ -25,37 +25,13 @@ for i in range(nopt):
         for j in range(dimpt):
                 x[i][j]=float(x[i][j])
 
-# inicijalizacija centara za k-means++
-def initialize(X, K):
-    C = [X[random.randint(0, nopt - 1)]]
-    for k in range(1, K):
-        print(k)
-        D = []
-        # prvo odredimo najmanje udaljenosti od vec izabranih sredista
-        for i in range(nopt):
-            cl_point = 0
-            cl_dist = sed(X[i], C[0])
-            for j in range(len(C)):
-                temp_dist = sed(X[i], C[j])
-                if temp_dist < cl_dist:
-                    cl_dist = temp_dist
-                    cl_point = j
-            D.append(cl_dist)
-        # sad biramo novu tocku na radnom nacin pomocu distribucije proporcionalne s D^2 (u nasem slucaju je to upravo D)
-        # prvo nademo sumu da odredimo koji dio vjerojatnosti pripada danim tockama
-        # potom idemo po svim tockama i akumuliramo globalnu vjerojatnost dok ne prijedemo danu radnom vrijednost
-        sum_dist = sum(D)
-        r = random.random()
-        cum_prob = 0
-        for i in range(nopt):
-            # dodamo djelic vjerojatnosti od tocke na vjerojatnost i porvjerimo je li ju presla
-            cum_prob += D[i] / sum_dist
-            if cum_prob > r:
-                C.append(X[i])
-                break
-    return C
 
-cent = initialize(x, noc)
+
+cent=[]
+for i in range(noc):
+        ind=random.randint(0, nopt-1)
+        cent.append(x[ind])
+
 
 gid=[]
 for i in range(nopt): # punim listu gid (=group indicator), da bih je poslije mogao samo mijenjati
@@ -64,23 +40,16 @@ for i in range(nopt): # punim listu gid (=group indicator), da bih je poslije mo
 # main loop, repeated "noi" times
 # stavi 800 iteracija za mali set
 # stavi 50 iteracija za veliki set
-for temp in range(50,1,-2):
+for temp in range(100
+                  ,1,-2):
+        print(temp)
         # odredjivanje clustera
         for i in range(nopt):
                 c=sed(x[i],cent[0])
-                suma=tmp_dist=c
-                gid[i]=0
-                for j in range(1,noc):
+                for j in range(1, noc):
+                    if(sed(x[i],cent[j])<c):
+                        gid[i]=j
                         c=sed(x[i],cent[j])
-                        suma=suma+c
-                        if c < tmp_dist:
-                                gid[i]=j
-                                tmp_dist=c
-                gid2=random.randint(0,noc-1)
-                a=(1.0*temp/200.0)*(1.0*temp/200.0)*(noc*tmp_dist/suma)
-                b=random.random()
-                if b<a:
-                        gid[i]=gid2      
         # kraj odredjivanja clustera
         # odredjivanje novih centara
         for i in range(noc):
@@ -109,19 +78,6 @@ for temp in range(50,1,-2):
                     cnt = cnt + 1
             counter.append(cnt)
                     
-        print(counter)
+        print(counter)           
 f1.close()
 f2.close()
-
-
-                
-        
-        
-        
-        
-
-
-
-
-    
-
